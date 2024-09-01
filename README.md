@@ -1,7 +1,7 @@
 # ConvoFlow-Real-time-chat-application
 This is our first MERN STACK Project.
 
--- User Registration and Authentication
+ User Registration and Authentication
 POST /api/register
 
 Description: Registers a new user.
@@ -43,7 +43,7 @@ json
   "username": "string",
   "email": "string"
 }
--- Chat Management
+- Chat Management
 GET /api/chats
 
 Description: Retrieves a list of all chats for the authenticated user.
@@ -74,7 +74,7 @@ json
   "chatId": "string"
 }
 
--- Message Management
+- Message Management
 GET /api/chats/
 /messages
 
@@ -107,7 +107,7 @@ json
   "messageId": "string",
   "timestamp": "timestamp"
 }
-4. Socket.io Events
+- Socket.io Events
 join
 
 Description: Join a specific chat room.
