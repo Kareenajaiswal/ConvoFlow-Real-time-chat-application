@@ -3,12 +3,9 @@ const port = 3000;
 const app = express();
 const bodyParser = require("body-parser");
 
-const authRouter = require("./routes/auth");
+
 const apiRouter = require("./routes/api");
-const divRouter = require("./routes/division");
-const empRouter = require("./routes/employee");
-const qrRouter = require("./routes/qr");
-const attendanceRouter = require("./routes/attendance");
+
 
 app.use(bodyParser.json());
 
