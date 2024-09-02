@@ -3,6 +3,12 @@ const port = 3000;
 const app = express();
 const bodyParser = require("body-parser");
 
+//for socket (testing in process)
+const http = require('http');
+const server = http.createServer(app);
+const initializeSocket = require('./socket');
+initializeSocket(server);
+
 
 const apiRouter = require("./routes/api");
 
