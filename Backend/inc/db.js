@@ -4,13 +4,32 @@ mongoose.connect(connStr);
 
 
 const UserSchema = new mongoose.Schema({
-    name : String,
-    email : String,
-    password : String
+    name: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    avatar: { type: String },
+    status: { type: String, default: 'offline' },
 })
 
-const User = mongoose.model("User",UserSchema);
+const ChatSchema = new mongoose.Schema({
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    lastMessage: { type: String },
+    lastMessageTime: { type: Date, default: Date.now },
+});
+
+const MessageSchema = new mongoose.Schema({
+    chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    content: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+});
+
+const User = mongoose.model("User", UserSchema);
+const Chat = mongoose.model("Chat", ChatSchema);
+const Message = mongoose.model("Message", MessageSchema);
 
 module.exports = {
-    User
+    User,
+    Chat,
+    Message
 };

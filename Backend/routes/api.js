@@ -4,18 +4,23 @@ const authCheck = require("../middleware/authCheck");
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../inc/config");
 const { tokenBlacklist } = require("../inc/config");
-const { User } = require("../inc/db");
+const { User, Chat } = require("../inc/db");
+
+
+// LOGIN & REGISTRATION
 
 router.post("/register", async (req, res) => {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    const avatar = req.body.avatar;
 
 
     const usrCreate = await User.create({
         name,
         email,
         password,
+        avatar
     });
 
     if (usrCreate) {
@@ -43,10 +48,11 @@ router.post("/login", async (req, res) => {
         email,
         password
     })
-
+    const id = validUser._id.toString();
     if (validUser) {
-        const token = jwt.sign({ email }, jwtSecret);
-        console.log("Your token is " + token);
+        const token = jwt.sign({ id }, jwtSecret);
+        const tokenDecode = jwt.decode(token);
+
         res.json({
             token
         })
@@ -68,17 +74,37 @@ router.post("/logout", authCheck, (req, res) => {
 })
 
 
-router.get("/profile", authCheck, async (req, res) => {
-    const id = req.body.id;
+//PROFILE 
 
+router.get("/profile", authCheck, async (req, res) => {
+    const token = req.headers.authorization;
+    const tokenDecode = jwt.decode(token);
     const userDetails = await User.findOne({
-        _id : id
+        _id : tokenDecode.id
     })
 
     res.json({
         Profile: userDetails
     })
 
+})
+
+// CHATS
+router.get("/chats", authCheck, async (req, res) => {
+    const token = req.headers.authorization;
+    const tokenDecode = jwt.decode(token);
+    const id = tokenDecode.id;
+
+    const receiverid = req.body.receiver;
+
+    await Chat.create({
+        participants : [id,receiverid]
+    })
+
+    res.json({
+        msg : "Chat Created !!",
+        chatID : _id
+    })
 })
 
 module.exports = router, tokenBlacklist;
