@@ -13,8 +13,8 @@ const UserSchema = new mongoose.Schema({
 
 const ChatSchema = new mongoose.Schema({
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    lastMessage: { type: String },
-    lastMessageTime: { type: Date, default: Date.now },
+    lastMessage: { type: String, default: null },
+    lastMessageTime: { type: Date, default: null },
 });
 
 const MessageSchema = new mongoose.Schema({

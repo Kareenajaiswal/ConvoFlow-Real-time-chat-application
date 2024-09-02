@@ -89,21 +89,35 @@ router.get("/profile", authCheck, async (req, res) => {
 
 })
 
+
 // CHATS
 router.get("/chats", authCheck, async (req, res) => {
     const token = req.headers.authorization;
     const tokenDecode = jwt.decode(token);
+    const ChatList = await Chat.findOne({
+        "participants.0" : tokenDecode.id
+    })
+
+    res.json({
+        ChatList
+    })
+
+})
+
+router.post("/chats", authCheck, async (req, res) => {
+    const token = req.headers.authorization;
+    const tokenDecode = jwt.decode(token);
     const id = tokenDecode.id;
 
-    const receiverid = req.body.receiver;
+    const receiverid = req.body.receiverid;
 
-    await Chat.create({
+    const chatCreate = await Chat.create({
         participants : [id,receiverid]
     })
 
     res.json({
         msg : "Chat Created !!",
-        chatID : _id
+        chatID : chatCreate._id
     })
 })
 
