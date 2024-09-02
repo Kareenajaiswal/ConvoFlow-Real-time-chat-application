@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    avatar: { type: String },
+    avatar: { type: String, default: 'test.jpg' },
     status: { type: String, default: 'offline' },
 })
 
@@ -16,6 +16,7 @@ const ChatSchema = new mongoose.Schema({
     lastMessage: { type: String, default: null },
     lastMessageTime: { type: Date, default: null },
 });
+
 
 const MessageSchema = new mongoose.Schema({
     chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },

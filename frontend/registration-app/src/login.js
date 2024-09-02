@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './login.css'; // You can add some custom styles for the login page
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
@@ -10,13 +10,13 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
+          email,
           password,
         }),
       });
@@ -41,11 +41,11 @@ const Login = () => {
       <h2>Login ConvoFlow</h2>
       <form onSubmit={handleLogin}>
         <div>
-          <label>Username:</label>
+          <label>email:</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -57,6 +57,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <a href="/">SignUp</a>
         </div>
         <button type="submit">Login</button>
       </form>

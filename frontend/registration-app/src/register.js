@@ -3,7 +3,7 @@ import axios from 'axios';
 import './signup.css';
 function Register() {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: ''
   });
@@ -21,10 +21,10 @@ function Register() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/register', formData);
+      const response = await axios.post('http://localhost:8000/api/register', formData);
       setMessage(response.data.message);
       setFormData({
-        username: '',
+        name: '',
         email: '',
         password: ''
       });
@@ -39,11 +39,11 @@ function Register() {
       <h2>SignUp</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Username:</label>
+          <label>name:</label>
           <input
             type="text"
-            name="username"
-            value={formData.username}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
           />

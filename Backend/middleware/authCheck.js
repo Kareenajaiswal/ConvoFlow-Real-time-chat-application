@@ -1,7 +1,6 @@
 const { jwtSecret } = require("../inc/config");
 const jwt = require("jsonwebtoken");
 const { tokenBlacklist } = require("../inc/config");
-const { Employee } = require("../inc/db");
 
 async function authCheck(req,res,next){
     const token = req.headers.authorization;

@@ -1,7 +1,10 @@
 const express = require("express");
-const port = 3000;
+const port = 8000;
 const app = express();
+const cors = require('cors');
 const bodyParser = require("body-parser");
+
+app.use(cors());
 
 //for socket (testing in process)
 const http = require('http');

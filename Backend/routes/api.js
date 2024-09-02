@@ -10,9 +10,11 @@ const { User, Chat, Message } = require("../inc/db");
 // LOGIN & REGISTRATION
 
 router.post("/register", async (req, res) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    // const name = req.body.name;
+    // const email = req.body.email;
+    // const password = req.body.password;
+
+    const { name,email,password } = req.body;
     const avatar = req.body.avatar;
 
 
@@ -38,6 +40,12 @@ router.post("/register", async (req, res) => {
 
 })
 
+// jwt : JsonWebTokenError
+// sign , verify , decode
+
+// sign => only in the time of logging in (name) with jwtSecret
+// verify => in every page
+// decode =>  
 
 
 router.post("/login", async (req, res) => {
@@ -48,11 +56,9 @@ router.post("/login", async (req, res) => {
         email,
         password
     })
-    const id = validUser._id.toString();
     if (validUser) {
+        const id = validUser._id.toString();
         const token = jwt.sign({ id }, jwtSecret);
-        const tokenDecode = jwt.decode(token);
-
         res.json({
             token
         })
@@ -108,7 +114,7 @@ router.get("/chats", authCheck, async (req, res) => {
 router.post("/chats", authCheck, async (req, res) => {
     const token = req.headers.authorization;
     const tokenDecode = jwt.decode(token);
-    const id = tokenDecode.id;
+    const id = tokenDecode.id; //sender's id
 
     const receiverid = req.body.receiverid;
 
