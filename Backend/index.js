@@ -9,7 +9,7 @@ app.use(cors());
 //for socket (testing in process)
 const http = require('http');
 const server = http.createServer(app);
-const initializeSocket = require('./socket');
+const { initializeSocket } = require('./socket');
 initializeSocket(server);
 
 

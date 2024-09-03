@@ -26,6 +26,15 @@ const Login = () => {
       if (response.ok) {
         // Login was successful
         setMessage('Login successful!');
+
+        //socket testing are
+        // const { token, user } = response.data;
+
+        // // Store token (e.g., in local storage)
+        // localStorage.setItem("token", token);
+
+        // // Redirect to the chat page with the user's chat ID
+        // navigate(`/chat/${user.chatId}`);
         // Redirect to dashboard or handle success logic here
       } else {
         // Login failed

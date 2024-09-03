@@ -1,47 +1,53 @@
+const { Server } = require("socket.io");
 
-//TESTING (Inprocess)
-const socketIo = require('socket.io');
-const axios = require('axios'); // For making HTTP requests
+let io;
 
 const initializeSocket = (server) => {
-    const io = socketIo(server);
+  io = new Server(server, {
+    cors: {
+      origin: "http://localhost:3000", // Your frontend URL
+      methods: ["GET", "POST"],
+    },
+  });
 
-    io.on('connection', (socket) => {
-        console.log('A user connected: ' + socket.id);
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
 
-        // Listen for a new message
-        socket.on('sendMessage', async (data) => {
-            try {
-                // Make a request to the existing message API endpoint
-                const response = await axios.post('http://localhost:3000/api/chats/messages', {
-                    chatId: data.chatId,
-                    content: data.content
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${data.token}` // Include the token if required
-                    }
-                });
-
-                const message = response.data.message; // Assuming the API returns the created message
-
-                // Broadcast the message to other participants in the chat
-                io.to(data.chatId).emit('receiveMessage', message);
-
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
-        });
-
-        // Listen for a user joining a chat room
-        socket.on('joinChat', (chatId) => {
-            socket.join(chatId);
-            console.log(`User joined chat: ${chatId}`);
-        });
-
-        socket.on('disconnect', () => {
-            console.log('User disconnected: ' + socket.id);
-        });
+    // Join a specific chat room
+    socket.on("joinRoom", (chatId) => {
+      socket.join(chatId);
+      console.log(`User ${socket.id} joined chat room ${chatId}`);
     });
+
+    // Listen for new messages
+    socket.on("newMessage", async ({ chatId, content }) => {
+      // Assuming you have a function to save the message in the database
+      const message = await saveMessage(chatId, content, socket.id);
+
+      // Broadcast the message to others in the room
+      io.to(chatId).emit("message", message);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
+  });
 };
 
-module.exports = initializeSocket;
+// Function to save a message in the database
+const saveMessage = async (chatId, content, senderId) => {
+  const message = await Message.create({
+    chatId,
+    sender: senderId,
+    content,
+  });
+
+  await Chat.updateOne(
+    { _id: chatId },
+    { lastMessage: content, lastMessageTime: message.timestamp }
+  );
+
+  return message;
+};
+
+module.exports = { initializeSocket };
