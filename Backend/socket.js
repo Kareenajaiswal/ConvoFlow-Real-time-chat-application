@@ -1,6 +1,8 @@
 const { Server } = require("socket.io");
+const { Message,Chat, User } = require("./inc/db");
 
 let io;
+
 
 const initializeSocket = (server) => {
   io = new Server(server, {
@@ -10,22 +12,35 @@ const initializeSocket = (server) => {
     },
   });
 
+
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
     // Join a specific chat room
     socket.on("joinRoom", (chatId) => {
-      socket.join(chatId);
-      console.log(`User ${socket.id} joined chat room ${chatId}`);
+      if (chatId) {
+        socket.join(chatId);
+        console.log(`User ${socket.id} joined chat room ${chatId}`);
+      } else {
+        console.warn(`User ${socket.id} attempted to join with an invalid chatId`);
+      }
     });
+    
 
     // Listen for new messages
-    socket.on("newMessage", async ({ chatId, content }) => {
+    // socket.on("newMessage", async ({ chatId, content, username }) => {
+    socket.on("newMessage", async ({ chatId, content, id }) => {
       // Assuming you have a function to save the message in the database
-      const message = await saveMessage(chatId, content, socket.id);
+      const message = await saveMessage(chatId, content, id);
+      const usr = await User.findOne({ _id : id })
+      const username = usr.name;
 
-      // Broadcast the message to others in the room
-      io.to(chatId).emit("message", message);
+      const messageWithUsername = {
+        ...message.toObject(),
+        username,
+      };
+
+      io.to(chatId).emit("message", messageWithUsername);
     });
 
     socket.on("disconnect", () => {
@@ -35,10 +50,10 @@ const initializeSocket = (server) => {
 };
 
 // Function to save a message in the database
-const saveMessage = async (chatId, content, senderId) => {
+const saveMessage = async (chatId, content, id) => {
   const message = await Message.create({
     chatId,
-    sender: senderId,
+    sender: id,
     content,
   });
 

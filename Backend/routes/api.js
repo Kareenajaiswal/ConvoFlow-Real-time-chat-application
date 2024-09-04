@@ -58,9 +58,12 @@ router.post("/login", async (req, res) => {
     })
     if (validUser) {
         const id = validUser._id.toString();
+        const username = validUser.name;
         const token = jwt.sign({ id }, jwtSecret);
         res.json({
-            token
+            token,
+            id,
+            username
         })
     } else {
         res.status(404).json({

@@ -6,7 +6,6 @@ import Chat from "./components/Chat";
 import UserProfile from './components/UserProfile';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <Router>
@@ -14,9 +13,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Register />} />
+          <Route path="/UserProfile" element={<UserProfile />} />
           //socket testing are
           <Route path="/chat/:chatId" element={<Chat />} />
-          <Route path="/UserProfile" element={<UserProfile />} />
         </Routes>
       </div>
     </Router>
