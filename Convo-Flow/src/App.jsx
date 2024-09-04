@@ -4,6 +4,7 @@ import Login from './login';
 import Register from './register';
 import Chat from "./components/Chat";
 import UserProfile from './components/UserProfile';
+import Dashboard from './components/Dashboard';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/UserProfile" element={<UserProfile />} />
           //socket testing are
           <Route path="/chat/:chatId" element={<Chat />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>

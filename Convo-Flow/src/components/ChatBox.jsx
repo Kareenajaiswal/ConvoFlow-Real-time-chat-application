@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar } from 'antd';
 
-export function ChatBoxReceiver({ avatar, user, message }) {
+export const ChatBoxReceiver = ({ avatar, user, message }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-start', flexDirection: 'row', marginBottom: 10 }}>
       <Avatar
@@ -17,9 +17,9 @@ export function ChatBoxReceiver({ avatar, user, message }) {
       </p>
     </div>
   );
-}
+};
 
-export function ChatBoxSender({ avatar, user, message }) {
+export const ChatBoxSender = ({ avatar, user, message }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'flex-end', marginBottom: 10 }}>
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -37,4 +37,4 @@ export function ChatBoxSender({ avatar, user, message }) {
       </div>
     </div>
   );
-}
+};

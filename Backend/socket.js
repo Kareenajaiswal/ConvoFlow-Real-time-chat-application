@@ -1,8 +1,7 @@
 const { Server } = require("socket.io");
-const { Message,Chat, User } = require("./inc/db");
+const { Message, Chat, User } = require("./inc/db");
 
 let io;
-
 
 const initializeSocket = (server) => {
   io = new Server(server, {
@@ -11,7 +10,6 @@ const initializeSocket = (server) => {
       methods: ["GET", "POST"],
     },
   });
-
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
@@ -25,21 +23,22 @@ const initializeSocket = (server) => {
         console.warn(`User ${socket.id} attempted to join with an invalid chatId`);
       }
     });
-    
 
     // Listen for new messages
-    // socket.on("newMessage", async ({ chatId, content, username }) => {
     socket.on("newMessage", async ({ chatId, content, id }) => {
-      // Assuming you have a function to save the message in the database
-      const message = await saveMessage(chatId, content, id);
-      const usr = await User.findOne({ _id : id })
-      const username = usr.name;
+      // Save the message to the database
+      let message = await saveMessage(chatId, content, id);
 
+      // Populate the sender field with the user details (specifically the username)
+      message = await message.populate('sender', 'name').then();
+
+      // Prepare the message with the populated username
       const messageWithUsername = {
-        ...message.toObject(),
-        username,
+        ...message.toObject(), // Convert Mongoose document to a plain object
+        username: message.sender.name, // Attach the populated username
       };
 
+      // Emit the message to the chat room
       io.to(chatId).emit("message", messageWithUsername);
     });
 
@@ -57,6 +56,7 @@ const saveMessage = async (chatId, content, id) => {
     content,
   });
 
+  // Update the chat with the latest message details
   await Chat.updateOne(
     { _id: chatId },
     { lastMessage: content, lastMessageTime: message.timestamp }

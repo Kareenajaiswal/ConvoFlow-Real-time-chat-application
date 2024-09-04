@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
     // const password = req.body.password;
 
     const { name,email,password } = req.body;
-    const avatar = req.body.avatar;
+    const avatar = "test.jpg";
 
 
     const usrCreate = await User.create({
@@ -30,6 +30,36 @@ router.post("/register", async (req, res) => {
             msg: "User created !!",
             Details: {
                 usrCreate
+            }
+        })
+    } else {
+        res.status(404).json({
+            msg: "Error"
+        })
+    }
+
+})
+
+router.post("/profileupdate", async (req, res) => {
+
+    const { id,name,email,password } = req.body;
+    const avatar = "test.jpg";
+
+
+    const usrUpdate = await User.updateOne({
+        _id : id
+    },{
+        name,
+        email,
+        password,
+        avatar
+    });
+
+    if (usrUpdate) {
+        res.json({
+            msg: "User Update !!",
+            Details: {
+                usrUpdate
             }
         })
     } else {
@@ -65,6 +95,7 @@ router.post("/login", async (req, res) => {
             id,
             username
         })
+        
     } else {
         res.status(404).json({
             msg: "Authentication Failed !!"
@@ -188,10 +219,29 @@ router.post("/chats/messages", authCheck, async (req, res) => { //Working
         msg: "Message sent successfully !!"
     })
 
-
-
-
 })
+
+// router.get('/chats/:chatId/messages', async (req, res) => {
+//     const { chatId } = req.params;
+//     try {
+//       const messages = await Message.find({ chatId }).sort({ timestamp: 1 });
+//       res.json(messages);
+//     } catch (error) {
+//       res.status(500).json({ error: 'Failed to fetch messages' });
+//     }
+//   });
+
+  router.get('/chats/:chatId/messages', async (req, res) => {
+    const { chatId } = req.params;
+    try {
+        const messages = await Message.find({ chatId })
+            .sort({ timestamp: 1 })
+            .populate('sender', 'name'); // Populate the sender field to include the username
+        res.json(messages);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch messages' });
+    }
+});
 
 
 module.exports = router, tokenBlacklist;

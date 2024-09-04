@@ -32,6 +32,8 @@ const Login = () => {
         localStorage.setItem("token",data.token);
         localStorage.setItem("id",data.id);
         localStorage.setItem("username",data.username);
+
+        window.location.href = "http://localhost:3000/dashboard";
         
       } else {
         // Login failed

@@ -13,6 +13,7 @@ async function authCheck(req,res,next){
         })
     }
     
+    
     if(verified){
         next();
     }else{
