@@ -3,14 +3,16 @@ import axios from 'axios';
 // eslint-disable-next-line no-unused-vars
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
+
+
 const Dashboard = () => {
   const [chats, setChats] = useState([]);
   const token = localStorage.getItem('token');
   const navigate = useNavigate(); // Initialize the useNavigate hook for navigation
+  const id = localStorage.getItem('id'); 
 
-  if (!token) {
-    // Redirect to the desired URL if token is missing
-    window.location.href = 'http://localhost:3000/login'; // Replace with your desired URL
+  if(!token){
+    window.location.href = 'http://localhost:3000/login'; // Redirect if token is missing
     return; // Stop further execution
   }
 
@@ -28,6 +30,8 @@ const Dashboard = () => {
         console.error('Error fetching chats:', error);
       }
     };
+    console.log(chats);
+
 
     fetchChats();
   }, []);
@@ -118,7 +122,13 @@ const Dashboard = () => {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <strong style={{ fontSize: "1.2em", color: "#1a73e8" }}>{chat.participants[1]}</strong>
+              {/* <strong style={{ fontSize: "1.2em", color: "#1a73e8" }}>{chat.participants[1]}</strong> */}
+              <strong style={{ fontSize: "1.2em", color: "#1a73e8" }}>
+              {chat.participants
+                .filter((participant) => participant._id !== id)
+                .map((participant) => participant.name)
+                .join(', ')}
+              </strong>
               <span style={{ fontSize: "0.9em", color: "#666" }}>{chat.lastMessageTime}</span>
             </div>
             <p style={{ marginTop: "8px", color: "#444" }}>{chat.lastMessage}</p>

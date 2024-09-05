@@ -91,8 +91,8 @@ const UserProfile = () => {
         {/* <div className="profile-item">
           <FontAwesomeIcon icon={faBirthdayCake} />
           <input type="text" value={userDetails.birthday} />
-        </div>
-        <div className="profile-item">
+        </div> */}
+        {/* <div className="profile-item">
           <FontAwesomeIcon icon={faPhone} />
           <input type="text" value={userDetails.phone} />
         </div> */}
@@ -101,7 +101,7 @@ const UserProfile = () => {
           justifyContent : "center"
           }} className="profile-item">
           {/* <FontAwesomeIcon icon={faInstagram} /> */}
-          <div>{userDetails.id}</div>
+          {/* <div>{userDetails.id}</div> */}
         </div>
         <div className="profile-item">
           <FontAwesomeIcon icon={faEnvelope} />
