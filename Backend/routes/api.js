@@ -128,6 +128,16 @@ router.get("/profile", authCheck, async (req, res) => {
     })
 
 })
+router.get("/users", async (req, res) => {
+
+    const userDetails = await User.find({
+    })
+
+    res.json({
+        userDetails
+    })
+
+})
 
 
 // CHATS LIST (One to One)
@@ -138,6 +148,7 @@ router.get("/chats", authCheck, async (req, res) => {
     const ChatList = await Chat.find({
         participants: { $in: [tokenDecode.id] }  // sender and receiver both will have the same chat list, only if there are common chat room
     })
+    .populate('participants', 'name');
 
     res.json({
         ChatList
