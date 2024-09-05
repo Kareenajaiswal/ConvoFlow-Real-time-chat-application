@@ -8,10 +8,9 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 const Dashboard = () => {
   const [chats, setChats] = useState([]);
   const token = localStorage.getItem('token');
-  const navigate = useNavigate(); // Initialize the useNavigate hook for navigation
-  const id = localStorage.getItem('id'); 
+  const id = localStorage.getItem('id');
 
-  if(!token){
+  if (!token) {
     window.location.href = 'http://localhost:3000/login'; // Redirect if token is missing
     return; // Stop further execution
   }
@@ -40,10 +39,14 @@ const Dashboard = () => {
     window.location.href = `http://localhost:3000/chat/${chatId}`;
   };
 
-  const handleProfileClick = () => {
-    // Redirect to the profile page
-    navigate(`/UserProfile/`); // Replace with your desired profile URL
-  };
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('id');
+    localStorage.removeItem('username');
+
+    window.location.href = 'http://localhost:3000/login';
+  }
+
 
   return (
     <div style={{
@@ -55,31 +58,25 @@ const Dashboard = () => {
       backgroundPosition: "center",
       color: "#fff",
     }}>
-      {/* Profile Redirect Button */}
       <button
-        onClick={handleProfileClick}
+        onClick={handleLogout}
         style={{
-          position: "absolute", // Adjust positioning as needed
-          top: "20px",
-          right: "20px",
-          padding: "10px 20px",
-          backgroundColor: "#1a73e8",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-          transition: "background-color 0.2s",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#0f5abc";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "#1a73e8";
+          padding: '10px 0px',
+          backgroundColor: 'red',
+          width: "10%",
+          marginLeft: "80%",
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          fontSize: '30px',
+          cursor: 'pointer',
+          flex: '1',
+          boxSizing: 'border-box'
         }}
       >
-        Go to Profile
+        Logout
       </button>
+
 
       <h2 style={{
         textAlign: "center",
@@ -88,7 +85,7 @@ const Dashboard = () => {
         fontSize: "3.5em",
         textShadow: "2px 2px 8px rgba(0, 0, 0, 0.5)",
       }}>
-        Your Chats
+        Messages
       </h2>
 
       <div style={{
@@ -124,10 +121,10 @@ const Dashboard = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               {/* <strong style={{ fontSize: "1.2em", color: "#1a73e8" }}>{chat.participants[1]}</strong> */}
               <strong style={{ fontSize: "1.2em", color: "#1a73e8" }}>
-              {chat.participants
-                .filter((participant) => participant._id !== id)
-                .map((participant) => participant.name)
-                .join(', ')}
+                {chat.participants
+                  .filter((participant) => participant._id !== id)
+                  .map((participant) => participant.name)
+                  .join(', ')}
               </strong>
               <span style={{ fontSize: "0.9em", color: "#666" }}>{chat.lastMessageTime}</span>
             </div>
