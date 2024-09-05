@@ -28,6 +28,7 @@ function Register() {
         email: '',
         password: ''
       });
+      window.location.href = "http://localhost:3000/login";
     } catch (error) {
       setMessage('Registration failed. Please try again.');
       console.error('There was an error registering the user!', error);

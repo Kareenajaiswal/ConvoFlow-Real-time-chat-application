@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import socket from "../socketService";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+// import '../signup.css';
 
 
 
@@ -61,14 +62,13 @@ const Chat = () => {
   };
 
   return (
-    <div style={{
+    <div className="chat-container" style={{
       display: 'flex',
       flexDirection: 'column',
       height: '90vh',
       width: '800px',
       margin: '0 auto',
       fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f0f2f5',
       borderRadius: '10px',
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
     }}>
@@ -86,21 +86,24 @@ const Chat = () => {
         flex: '1',
         padding: '15px',
         overflowY: 'auto',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         borderBottom: '1px solid #ddd',
         borderRadius: '0 0 10px 10px'
       }}>
         {messages.map((msg, index) => (
           <div key={index} style={{
-            marginBottom: '10px',
             padding: '8px',
+            marginLeft: msg.sender._id === id ? '30%' : '',
+            marginRight: msg.sender._id === id ? '' : '30%',
+            marginBottom: '20px',
             backgroundColor: msg.sender._id === id ? '#d1e7dd' : '#f1f1f1', // Conditional background color
             borderRadius: '8px',
             textAlign: msg.sender._id === id ? 'right' : 'left' // Conditional text alignment
           }}>
-            <strong style={{
-              color: '#007bff'
-            }}>{msg.sender.name}:</strong> {msg.content}
+            <strong><a style={{
+              textDecoration:"none",
+              color:'#007bff'
+            }} href={msg.sender._id === id ? '/UserProfile' : ''}>{msg.sender.name}</a>:</strong> {msg.content}
           </div>
         ))}
       </div>

@@ -31,6 +31,16 @@ body{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(100px);
   }
+  .chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    /* background-color: #f9f9f9; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(100px);
+  }
   
   .form-group {
     margin-bottom: 15px;

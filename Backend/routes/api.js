@@ -5,50 +5,61 @@ const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../inc/config");
 const { tokenBlacklist } = require("../inc/config");
 const { User, Chat, Message } = require("../inc/db");
+const bcrypt = require('bcrypt');
+
 
 
 // LOGIN & REGISTRATION
 
 router.post("/register", async (req, res) => {
-    // const name = req.body.name;
-    // const email = req.body.email;
-    // const password = req.body.password;
-
-    const { name,email,password } = req.body;
+    const { name, email, password } = req.body;
     const avatar = "test.jpg";
+    const saltRounds = 10;  // Adjust this for stronger hashing
 
+    try {
+        // 1. Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const usrCreate = await User.create({
-        name,
-        email,
-        password,
-        avatar
-    });
+        // 2. Create the user with the hashed password
+        const usrCreate = await User.create({
+            name,
+            email,
+            password: hashedPassword,  // Save the hashed password
+            avatar
+        });
 
-    if (usrCreate) {
-        res.json({
-            msg: "User created !!",
-            Details: {
-                usrCreate
-            }
-        })
-    } else {
-        res.status(404).json({
-            msg: "Error"
-        })
+        // 3. Respond with success if user creation was successful
+        if (usrCreate) {
+            res.json({
+                msg: "User created successfully!",
+                Details: usrCreate
+            });
+        } else {
+            res.status(404).json({
+                msg: "User creation failed!"
+            });
+        }
+
+    } catch (error) {
+        // 4. Handle any errors (hashing error, database error, etc.)
+        console.error(error);
+        res.status(500).json({
+            msg: "Server Error",
+            error: error.message
+        });
     }
+});
 
-})
 
 router.post("/profileupdate", async (req, res) => {
 
-    const { id,name,email,password } = req.body;
+    const { id, name, email, password } = req.body;
     const avatar = "test.jpg";
 
 
     const usrUpdate = await User.updateOne({
-        _id : id
-    },{
+        _id: id
+    }, {
         name,
         email,
         password,
@@ -78,31 +89,45 @@ router.post("/profileupdate", async (req, res) => {
 // decode =>  
 
 
-router.post("/login", async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const validUser = await User.findOne({
-        email,
-        password
-    })
-    if (validUser) {
-        const id = validUser._id.toString();
-        const username = validUser.name;
-        const token = jwt.sign({ id }, jwtSecret);
-        res.json({
-            token,
-            id,
-            username
-        })
-        
-    } else {
-        res.status(404).json({
-            msg: "Authentication Failed !!"
-        })
-    }
-
-})
+    router.post("/login", async (req, res) => {
+        const email = req.body.email;
+        const password = req.body.password;
+    
+        try {
+            // 1. Find the user by email (ignore password here)
+            const validUser = await User.findOne({ email });
+    
+            // 2. If user is not found, return an error
+            if (!validUser) {
+                return res.status(404).json({ msg: "User not found!" });
+            }
+    
+            // 3. Compare the provided password with the hashed password stored in the database
+            const isPasswordValid = await bcrypt.compare(password, validUser.password); // validUser.password is the hashed password
+    
+            if (!isPasswordValid) {
+                return res.status(401).json({ msg: "Authentication Failed!" });
+            }
+    
+            // 4. If password is valid, generate a JWT token
+            const id = validUser._id.toString();
+            const username = validUser.name;
+            const token = jwt.sign({ id }, jwtSecret);
+    
+            // 5. Send response with token, id, and username
+            res.json({
+                token,
+                id,
+                username
+            });
+    
+        } catch (error) {
+            // 6. Handle any server errors
+            console.error(error);
+            res.status(500).json({ msg: "Server Error" });
+        }
+    });
+    
 
 router.post("/logout", authCheck, (req, res) => {
     const token = req.headers.authorization;
@@ -148,7 +173,7 @@ router.get("/chats", authCheck, async (req, res) => {
     const ChatList = await Chat.find({
         participants: { $in: [tokenDecode.id] }  // sender and receiver both will have the same chat list, only if there are common chat room
     })
-    .populate('participants', 'name');
+        .populate('participants', 'name');
 
     res.json({
         ChatList
@@ -183,25 +208,25 @@ router.get("/chats/messages", authCheck, async (req, res) => { //Inprocess
     //check for the user wether it is a participants is in chat participants array or not,if not then don't proceed
 
     const chatValidate = await Chat.findOne({
-        _id : chatId,
+        _id: chatId,
         participants: { $in: [tokenDecode.id] }
     })
 
-    if(chatValidate){
+    if (chatValidate) {
         const chatRoom = await Message.find({
             chatId
         })
-    
+
         res.json({
             chatRoom
         })
-    }else{
+    } else {
         res.json({
-            msg : null
+            msg: null
         })
     }
 
-    
+
 
 })
 
@@ -242,7 +267,7 @@ router.post("/chats/messages", authCheck, async (req, res) => { //Working
 //     }
 //   });
 
-  router.get('/chats/:chatId/messages', async (req, res) => {
+router.get('/chats/:chatId/messages', async (req, res) => {
     const { chatId } = req.params;
     try {
         const messages = await Message.find({ chatId })
