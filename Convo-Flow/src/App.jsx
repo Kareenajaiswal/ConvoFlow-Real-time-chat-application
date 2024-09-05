@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './login'; 
 import Register from './register';
@@ -15,7 +14,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Register />} />
           <Route path="/UserProfile" element={<UserProfile />} />
-          //socket testing are
           <Route path="/chat/:chatId" element={<Chat />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>

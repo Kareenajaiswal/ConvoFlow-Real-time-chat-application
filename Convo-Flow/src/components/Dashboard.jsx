@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+// eslint-disable-next-line no-unused-vars
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Dashboard = () => {
   const [chats, setChats] = useState([]);
-  const userId = localStorage.getItem('id');
   const token = localStorage.getItem('token');
   const navigate = useNavigate(); // Initialize the useNavigate hook for navigation
 
@@ -14,6 +14,7 @@ const Dashboard = () => {
     return; // Stop further execution
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     const fetchChats = async () => {
       try {

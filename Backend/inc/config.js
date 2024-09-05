@@ -1,4 +1,4 @@
-const connStr = "mongodb+srv://prashantprasad404:Prash012345@cluster0.zoelz.mongodb.net/Chat-App";
-const jwtSecret = "prash1234"
+const connStr = "mongodb+srv://kareenajaiswal123:jaiswalk@mycluster.77ekz.mongodb.net/Chat-App";
+const jwtSecret = "karu1234"
 let tokenBlacklist = [];
 module.exports = {connStr,jwtSecret,tokenBlacklist};
