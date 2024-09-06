@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line no-unused-vars
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 
 
@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [chats, setChats] = useState([]);
   const token = localStorage.getItem('token');
   const id = localStorage.getItem('id');
+  const navigate = useNavigate();
 
   if (!token) {
     window.location.href = 'http://localhost:3000/login'; // Redirect if token is missing
@@ -47,6 +48,38 @@ const Dashboard = () => {
     window.location.href = 'http://localhost:3000/login';
   }
 
+  const handleNewChat = async () => {
+    const receiverId = prompt('Enter the ID of the receiver:'); // Get receiver ID from user
+
+    const res = await axios.get(
+      'http://localhost:8000/api/users'
+    );
+    const userDetails = res.data.userDetails;
+    const userExists = userDetails.find(user => user._id === receiverId);
+
+    // if (receiverId) {
+    if (userExists) {
+      try {
+        const response = await axios.post(
+          'http://localhost:8000/api/chats',
+          { receiverid: receiverId },
+          {
+            headers: {
+              Authorization: `${localStorage.getItem('token')}`,
+            },
+          }
+        );
+        // Optionally, redirect to the new chat or update the state
+        const newChat = response.data.chatID;
+        setChats((prevChats) => [...prevChats, { _id: newChat, participants: [id, receiverId] }]);
+        navigate(`/chat/${newChat}`);
+      } catch (error) {
+        console.log('Error creating chat:', error);
+      }
+    }else{
+      alert("Receiver Id is not valid !!")
+    }
+  };
 
   return (
     <div style={{
@@ -132,6 +165,28 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
+      <button
+        onClick={handleNewChat}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          backgroundColor: '#1a73e8',
+          borderRadius: '50%',
+          width: '60px',
+          height: '60px',
+          fontSize: '30px',
+          color: '#fff',
+          border: 'none',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'pointer',
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        +
+      </button>
     </div>
   );
 };
